@@ -48,12 +48,22 @@ Then inference with huggingface.
 - [EleutherAI/lm-evaluation-harness](https://github.com/EleutherAI/lm-evaluation-harness)
 
 ## Citation
+
 ```
 @misc{tang2024rethinking,
       title={Rethinking Optimization and Architecture for Tiny Language Models}, 
       author={Yehui Tang and Fangcheng Liu and Yunsheng Ni and Yuchuan Tian and Zheyuan Bai and Yi-Qi Hu and Sichao Liu and Shangling Jui and Kai Han and Yunhe Wang},
       year={2024},
       eprint={2402.02791},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL}
+}
+
+@misc{wang2023pangupi,
+      title={PanGu-$\pi$: Enhancing Language Model Architectures via Nonlinearity Compensation}, 
+      author={Yunhe Wang and Hanting Chen and Yehui Tang and Tianyu Guo and Kai Han and Ying Nie and Xutao Wang and Hailin Hu and Zheyuan Bai and Yun Wang and Fangcheng Liu and Zhicheng Liu and Jianyuan Guo and Sinan Zeng and Yinchen Zhang and Qinghua Xu and Qun Liu and Jun Yao and Chao Xu and Dacheng Tao},
+      year={2023},
+      eprint={2312.17276},
       archivePrefix={arXiv},
       primaryClass={cs.CL}
 }
