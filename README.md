@@ -5,7 +5,7 @@ Implementation for [Rethinking Optimization and Architecture for Tiny Language M
 PanGu-π Pro is constructed with severalarchitecture and optimization improvement methods, including compact tokenizer, architecture tweak, parameter inheritance, and multiple-round training.
 
 <p align="center">
-<img src="fig/improve.PNG" width="700">
+<img src="fig/improve.png" width="700">
 </p>
 
 
@@ -19,7 +19,7 @@ PanGu-π Pro is constructed with severalarchitecture and optimization improvemen
 ## Results
 
 <p align="center">
-<img src="fig/results.PNG" width="900">
+<img src="fig/results.png" width="900">
 </p>
 
 ## Train
