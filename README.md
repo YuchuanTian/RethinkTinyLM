@@ -1,43 +1,74 @@
 # Rethinking Optimization and Architecture for Tiny Language Models
 
-Implementation for [Rethinking Optimization and Architecture for Tiny Language Models](https://arxiv.org/pdf/2402.02791.pdf). The power of large language models (LLMs) has been demonstrated through numerous data and computing resources. However, the application of language models on mobile devices is facing huge challenge on the computation and memory costs, that is, tiny language models with high performance are urgently required. Limited by the highly complex training process, there are many details for optimizing language models that are seldom studied carefully. In this study, based on a tiny language model with 1B parameters, we carefully design a series of empirical study to analyze the effect of each component. Three perspectives are mainly discussed, i.e., neural architecture, parameter initialization, and optimization strategy. Several design formulas are empirically proved especially effective for tiny language models, including tokenizer compression, architecture tweaking, parameter inheritance and multiple-round training. Then we train PanGu-π-1B Pro and PanGu-π-1.5B Pro on 1.6T multilingual corpora, following the established formulas. Experimental results demonstrate the improved optimization and architecture yield a notable average improvement of 8.87 on benchmark evaluation sets for PanGu-π-1B Pro. Besides, PanGu-π-1.5B Pro surpasses a range of SOTA models with larger model sizes, validating its superior performance.
+<p align="left">
+<a href="https://arxiv.org/abs/2402.02791" alt="arXiv">
+    <img src="https://img.shields.io/badge/arXiv-2402.02791-b31b1b.svg?style=flat" /></a>
+</p>
 
-PanGu-π Pro is constructed with severalarchitecture and optimization improvement methods, including compact tokenizer, architecture tweak, parameter inheritance, and multiple-round training.
+This is the official implementation of [Rethinking Optimization and Architecture for Tiny Language Models](https://arxiv.org/pdf/2402.02791.pdf), an empirical investigation about how to construct powerful language models.
+
+Four strategies are proposed to improve performance:
+
+- 🎯 Compact Tokenizer: efficient coverage of corpus;
+- 🔍 Architecture Tweak: better depth and width tradeoffs;
+- 🎁 Parameter Inheritance: powerful knowledge from larger LLMs;
+- 🔥 Multiple-Round Training: memory reinforcement of tiny models.
 
 <p align="center">
 <img src="fig/improve.png" width="700">
 </p>
-
-
-
-### Model Configure
+Based on the above observations, PanGu-π-1B Pro and PanGu-π-1.5B Pro are trained on 1.6T multilingual corpora. Model configurations are shown as follows:
 
 <p align="center">
 <img src="fig/configure.png" width="500">
 </p>
 
-## Results
+## Benchmark Results
 
 <p align="center">
 <img src="fig/results.png" width="900">
 </p>
 
-## Train
+## Training
 
 This repository is modified from the [InternEvo](https://github.com/InternLM/InternEvo) training framework.
 
-Here are the steps to train our models:
+Here are the steps to organize the codes:
 
 1. Clone the [InternEvo](https://github.com/InternLM/InternEvo) repository and configure the runtime environment.
 2. Copy the configuration files `configs/LLM1B.py` to the `InternEvo/configs/` directory.
 3. Copy the start script `start_finetune.py` to the `InternEvo` root directory.
-4. Start finetune: `python start_finetune.py`
+
+You can follow the guide of InternEvo to pretrain data and  train models (https://github.com/InternLM/InternEvo/blob/develop/doc/en/usage.md).  
+
+To pretrain by inheriting parameter from a large model, you can use the following command:
+
+```shell
+python start_finetune.py --config ./configs/LLM1B.py
+```
+
+The model's depth, width, and expanding rate can by easily adjusted in the config.
+
+Note that `MODEL_ONLY_FOLDER` is the model's checkpoint pruned from a large model.
+
+If you want to train from scratch, you need the set `load_given_ckpt=False` in the config.
+
+
+
+The compact tokenizer is constructed by removing low-frequency vocabularies. To prune tokenizer, you can follow these steps:
+
+1. Counting the frequency of tokens cached by the original big tokenizer.
+2. Firstly add the special tokens,  and then add the tokens with the highest word frequency to the new tokenizer.
 
 ## Inference
 
-Convert the model weight to huggingface format using the script `tools/transformers/convert2hf.py`.
+Convert the model weight to HuggingFace format using the script `tools/transformers/convert2hf.py`.
 
-Then inference with huggingface.
+```shell
+python tools/transformers/convert2hf.py --src_folder origin_ckpt/ --tgt_folder hf_ckpt/ --tokenizer tokenizer_path/
+```
+
+Then the model can be inferred with HuggingFace.
 
 ## Acknowledgements
 
@@ -50,21 +81,17 @@ Then inference with huggingface.
 ## Citation
 
 ```
-@misc{tang2024rethinking,
-      title={Rethinking Optimization and Architecture for Tiny Language Models}, 
-      author={Yehui Tang and Fangcheng Liu and Yunsheng Ni and Yuchuan Tian and Zheyuan Bai and Yi-Qi Hu and Sichao Liu and Shangling Jui and Kai Han and Yunhe Wang},
-      year={2024},
-      eprint={2402.02791},
-      archivePrefix={arXiv},
-      primaryClass={cs.CL}
+@article{tang2024rethinking,
+  title={Rethinking Optimization and Architecture for Tiny Language Models},
+  author={Tang, Yehui and Liu, Fangcheng and Ni, Yunsheng and Tian, Yuchuan and Bai, Zheyuan and Hu, Yi-Qi and Liu, Sichao and Jui, Shangling and Han, Kai and Wang, Yunhe},
+  journal={arXiv preprint arXiv:2402.02791},
+  year={2024}
 }
 
-@misc{wang2023pangupi,
-      title={PanGu-$\pi$: Enhancing Language Model Architectures via Nonlinearity Compensation}, 
-      author={Yunhe Wang and Hanting Chen and Yehui Tang and Tianyu Guo and Kai Han and Ying Nie and Xutao Wang and Hailin Hu and Zheyuan Bai and Yun Wang and Fangcheng Liu and Zhicheng Liu and Jianyuan Guo and Sinan Zeng and Yinchen Zhang and Qinghua Xu and Qun Liu and Jun Yao and Chao Xu and Dacheng Tao},
-      year={2023},
-      eprint={2312.17276},
-      archivePrefix={arXiv},
-      primaryClass={cs.CL}
+@article{wang2023pangu,
+  title={PanGu-$$\backslash$pi $: Enhancing Language Model Architectures via Nonlinearity Compensation},
+  author={Wang, Yunhe and Chen, Hanting and Tang, Yehui and Guo, Tianyu and Han, Kai and Nie, Ying and Wang, Xutao and Hu, Hailin and Bai, Zheyuan and Wang, Yun and others},
+  journal={arXiv preprint arXiv:2312.17276},
+  year={2023}
 }
 ```

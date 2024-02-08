@@ -1,4 +1,5 @@
 JOB_NAME = "1b_train"
+JOB_NAME = "1b_train"
 DO_ALERT = False
 
 SEQ_LEN = 2048

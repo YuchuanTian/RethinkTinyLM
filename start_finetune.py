@@ -1,4 +1,9 @@
 import os
+import argparse 
+
+parser = argparse.ArgumentParser()
+parser.add_argument("--config", type=str, default="./configs/LLM1B.py")
+args = parser.parse_args()
 
 def prepare_torchrun_dist():
     GPU_PER_NODE = 8
@@ -15,7 +20,7 @@ dist_args = prepare_torchrun_dist()
 
 command = (f'torchrun {dist_args} '
            f'train.py '
-           f'--config ./configs/LLM1B.py '
+           f'--config {args.config} '
            f'--launcher "torch" '
            )
 os.system(f'{command}')
