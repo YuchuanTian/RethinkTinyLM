@@ -62,13 +62,13 @@ The compact tokenizer is constructed by removing low-frequency vocabularies. To 
 
 ## Inference
 
-Convert the model weight to HuggingFace format using the script `tools/transformers/convert2hf.py`.
+Convert the model weight to Hugging Face format using the script `tools/transformers/convert2hf.py`.
 
 ```shell
 python tools/transformers/convert2hf.py --src_folder origin_ckpt/ --tgt_folder hf_ckpt/ --tokenizer tokenizer_path/
 ```
 
-Then the model can be inferred with HuggingFace.
+Then the model can be inferred with Hugging Face.
 
 ## Acknowledgements
 
