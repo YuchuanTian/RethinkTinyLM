@@ -17,7 +17,7 @@ Four strategies are proposed to improve performance:
 <p align="center">
 <img src="fig/improve.png" width="700">
 </p>
-Based on the above observations, PanGu-π-1B Pro and PanGu-π-1.5B Pro are trained on 1.6T multilingual corpora. Model configurations are shown as follows:
+Based on the observations above, PanGu-π-1B Pro and PanGu-π-1.5B Pro are trained on 1.6T multilingual corpora. Model configurations are shown as follows:
 
 <p align="center">
 <img src="fig/configure.png" width="500">
@@ -41,34 +41,45 @@ Here are the steps to organize the codes:
 
 You can follow the guide of InternEvo to pretrain data and  train models (https://github.com/InternLM/InternEvo/blob/develop/doc/en/usage.md).  
 
-To pretrain by inheriting parameter from a large model, you can use the following command:
-
-```shell
-python start_finetune.py --config ./configs/LLM1B.py
-```
-
 The model's depth, width, and expanding rate can by easily adjusted in the config.
 
-Note that `MODEL_ONLY_FOLDER` is the model's checkpoint pruned from a large model.
-
-If you want to train from scratch, you need the set `load_given_ckpt=False` in the config.
-
-
+#### Compact Tokenizer
 
 The compact tokenizer is constructed by removing low-frequency vocabularies. To prune tokenizer, you can follow these steps:
 
 1. Counting the frequency of tokens cached by the original big tokenizer.
 2. Firstly add the special tokens,  and then add the tokens with the highest word frequency to the new tokenizer.
 
+#### Parameter Inheritance
+
+To pretrain by inheriting parameter from a large model, you can use the following command:
+
+```shell
+python start_finetune.py --config ./configs/LLM1B.py
+```
+
+Note that `MODEL_ONLY_FOLDER` is the model's checkpoint pruned from a large model.
+
+If you want to train from scratch, you need the set `load_given_ckpt=False` in the config.
+
+#### Multiple-Round Training
+
+To extract a certain proportion of challenging examples from the last epoch, you can utilize the following steps:
+
+1. Compute the batch-wise loss $L=\{l_1,l_2,\cdots,l_N\}$ using the pre-trained frozen model from the previous epoch, where $N$ represents the total number of batches. For instance, a dataset containing 150B tokens might yield approximately 75000 batches when utilizing a batch size of 2M.
+2. Calculate the sampling probability $p_i = \exp(l_i) \bigg/ {\sum \limits_{j=1}^N \exp(l_j)}$. 
+3. Sample $N_0$ batches out of $N$ according to the sampling probability $\boldsymbol{p}$, i.e., `filtered = torch.multinomial(p, N_0, replacement=False)`
+4. Concatenate all the filtered batches to create the training dataset for the subsequent epoch.
+
 ## Inference
 
-Convert the model weight to HuggingFace format using the script `tools/transformers/convert2hf.py`.
+Convert the model weight to Hugging Face format using the script `tools/transformers/convert2hf.py`.
 
 ```shell
 python tools/transformers/convert2hf.py --src_folder origin_ckpt/ --tgt_folder hf_ckpt/ --tokenizer tokenizer_path/
 ```
 
-Then the model can be inferred with HuggingFace.
+Then the model can be inferred with Hugging Face.
 
 ## Acknowledgements
 
