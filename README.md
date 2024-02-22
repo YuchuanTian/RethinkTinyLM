@@ -37,7 +37,7 @@ Here are the steps to organize the codes:
 
 1. Clone the [InternEvo](https://github.com/InternLM/InternEvo) repository and configure the runtime environment.
 2. Copy the configuration files `configs/LLM1B.py` to the `InternEvo/configs/` directory.
-3. Copy the start script `start_finetune.py` to the `InternEvo` root directory.
+3. Copy the start script `src/start_finetune.py` to the `InternEvo` root directory.
 
 You can follow the guide of InternEvo to pretrain data and  train models (https://github.com/InternLM/InternEvo/blob/develop/doc/en/usage.md).  
 
@@ -48,7 +48,10 @@ The model's depth, width, and expanding rate can by easily adjusted in the confi
 The compact tokenizer is constructed by removing low-frequency vocabularies. To prune tokenizer, you can follow these steps:
 
 1. Counting the frequency of tokens cached by the original big tokenizer.
+    * `python src/step1_token_frequency_stat.py --src cached_data_dir --dst tmp_stat_files_dir`. Thhe script counts the frequency of all tokens in the `cached_data_dir` folder and generates a corresponding JSON file in the `tmp_stat_files_dir` folder.
+    * `python src/step2_token_frequency_stat_combie.py --src tmp_stat_files_dir --dst total_token_freq.json`. Combine all JSON files in the `tmp_stat_files_dir` folder and write the frequency of tokens in `total_token_freq.json`
 2. Firstly add the special tokens,  and then add the tokens with the highest word frequency to the new tokenizer.
+    * `python src/step3_generate_new_tokenizer.py --origin_tokenizer_dir origin_tokenzier --vocab_num compact_tokenizer_size --output new_tokenizer_dir --token_freq_file total_token_freq.json`. This script will generate a new tokenzier in the `new_tokenizer_dir` folder with `compact_tokenizer_size` tokens.
 
 #### Parameter Inheritance
 
