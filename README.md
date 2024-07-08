@@ -1,4 +1,4 @@
-# Rethinking Optimization and Architecture for Tiny Language Models
+# [ICML'24] Rethinking Optimization and Architecture for Tiny Language Models
 
 <p align="left">
 <a href="https://arxiv.org/abs/2402.02791" alt="arXiv">
